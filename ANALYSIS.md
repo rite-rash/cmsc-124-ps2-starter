@@ -15,4 +15,4 @@ The vector version applies each operation across out using vector expressions an
 
 In out * 2, the single multiplier is recycled across all scores. Replacing it with c(2, 3) repeats those multipliers, giving [16, 0, 24, 12] before capping and [16, 0, 20, 12] afterward. Barbara's result changes without a warning because 4 is divisible by 2.
 
-I would keep the vector version because its replacement, multiplication, and cap directly express the same rules for all scores. The loop is useful for following each student's result step by step.
+We would keep the vector version because its replacement, multiplication, and cap directly express the same rules for all scores. The loop is useful for following each student's result step by step.
