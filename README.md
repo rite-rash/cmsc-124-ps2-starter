@@ -1,6 +1,11 @@
 <!--no-pdf-->
 # CMSC 124 Problem Set 2 Starter
 
+## Members
+- Trisha Mae Hechenagocia (rite-rash)
+- Eusef Karl Blancada (evolto06 )
+
+
 This repository contains the R prediction corpus and the four functions for
 Problem Set 2. The assignment manual defines the work and the submission rules.
 
