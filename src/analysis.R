@@ -29,7 +29,13 @@
 # <-, replaces exactly the elements it marks and leaves the names attached. That
 # is the subassignment the constraint is asking for.
 clean_scores_vector <- function(scores) {
-    stop("TODO: implement clean_scores_vector()")
+    out <- setNames(as.double(scores), names(scores)) #take scores then turn to double then attach name
+    #set all missing values to 0, otherwise multiply by 2
+    out[is.na(out)] <- 0  
+    out <- out * 2
+    #apply cap by replacing every element greater than 20 to 20
+    out[out > 20] <- 20
+    out
 }
 
 # clean_scores_scalar(scores)
@@ -54,7 +60,15 @@ clean_scores_vector <- function(scores) {
 # names attached. Accumulating into a fresh vector with out <- c(out, value)
 # drops them, and the check compares with identical(), which notices.
 clean_scores_scalar <- function(scores) {
-    stop("TODO: implement clean_scores_scalar()")
+    out <- setNames(as.double(scores), names(scores))
+    for (i in seq_along(out)) {  #loop till the length of out
+        if (is.na(out[[i]])) {
+            out[[i]] <- 0
+        } else {
+            out[[i]] <- min(2 * out[[i]], 20)
+        }
+    }
+    out
 }
 
 # build_roster(student_names, groups, scores)
@@ -86,7 +100,16 @@ clean_scores_scalar <- function(scores) {
 # order. factor(groups, levels = unique(groups)) keeps first-appearance order.
 # unname() is what strips the names off the two score columns.
 build_roster <- function(student_names, groups, scores) {
-    stop("TODO: implement build_roster()")
+    adjusted_score <- unname(clean_scores_vector(scores))
+    data.frame(
+        #ass
+        name= as.character(student_names), #convert to char
+        group = factor(groups, levels= unique(groups)),
+        raw_score= unname(scores), 
+        adjusted_score = adjusted_score,
+        passed = adjusted_score>= 12,
+        stringsAsFactors= FALSE
+    )
 }
 
 # summarize_roster(roster)
@@ -119,5 +142,16 @@ build_roster <- function(student_names, groups, scores) {
 # split() can divide adjusted_score by every factor level. vapply() can then
 # compute one mean for each part and return a named vector with no dimensions.
 summarize_roster <- function(roster) {
-    stop("TODO: implement summarize_roster()")
+    #split adjusted_score into list of vectors group by factor levels
+    by_group<- split(roster$adjusted_score, roster$group) 
+    group_means<- vapply(by_group, mean, numeric(1)) #iterate over by_group then apply mean then return must be 1 num
+
+    list(
+            rows = as.integer(nrow(roster)),
+            missing_raw = as.integer(sum(is.na(roster$raw_score))), 
+            mean_adjusted = mean(roster$adjusted_score),
+            passed = roster$name[roster$passed],
+            mean_by_group = group_means
+        )
+
 }
